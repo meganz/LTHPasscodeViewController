@@ -21,7 +21,7 @@
 
 "1 Passcode failed attempt" = "パスコード入力に1回失敗";
 
-"%i Passcode Failed Attempts" = "パスコード入力に%i回失敗";
+"%i Passcode failed attempts" = "パスコード入力に%i回失敗";
 
 "Unlock using Touch ID" = "Touch IDで解除";
 
