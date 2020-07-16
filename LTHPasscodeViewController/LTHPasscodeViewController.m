@@ -1147,7 +1147,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
         @{ NSForegroundColorAttributeName : self.navigationTitleColor };
     }
     
-    navController.modalPresentationStyle = UIModalPresentationFullScreen;
+    self.navigationController.presentationController.delegate = (UIViewController<UIAdaptivePresentationControllerDelegate> *)viewController;
     [viewController presentViewController:navController
                                  animated:YES
                                completion:nil];
