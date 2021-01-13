@@ -483,6 +483,10 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
 - (void)setPasscodeType:(PasscodeType)passcodeType {
     if (_passcodeType == passcodeType) { return; }
     _passcodeType = passcodeType;
+    
+    _digitsCount = (passcodeType == PasscodeTypeSixDigits) ? 6 : 4;
+    [self _setupDigitFields];
+    [self setIsSimple:!(passcodeType == PasscodeTypeCustomAlphanumeric) inViewController:nil asModal:self.displayedAsModal];
 }
 
 #pragma mark - View life
@@ -1644,6 +1648,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     _failedAttemptLabel.layer.borderWidth = 0;
     _failedAttemptLabel.layer.borderColor = [UIColor clearColor].CGColor;
     _failedAttemptLabel.textColor = _labelTextColor;
+    _optionsButton.hidden = NO;
 }
 
 
