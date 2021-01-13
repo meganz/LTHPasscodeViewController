@@ -309,6 +309,14 @@
  */
 @property (nonatomic, assign) BOOL allowUnlockWithBiometrics;
 
+/* The types of passcodes that may be used. */
+typedef NS_ENUM(NSInteger, PasscodeType) {
+    PasscodeTypeFourDigits,           // 4 Numbers
+    PasscodeTypeSixDigits,            // 6 Numbers
+    PasscodeTypeCustomAlphanumeric    // Any length of characters
+};
+
+@property (nonatomic, assign) PasscodeType passcodeType;
 
 // MARK: - Methods
 

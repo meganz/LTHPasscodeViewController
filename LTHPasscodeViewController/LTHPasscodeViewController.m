@@ -57,6 +57,15 @@ options:NSNumericSearch] != NSOrderedAscending)
 #define LTHMainWindow [UIApplication sharedApplication].windows.firstObject
 #endif
 
+#import "MEGAChatSdk.h"
+#ifdef MNZ_SHARE_EXTENSION
+#import "MEGAShare-Swift.h"
+#elif MNZ_PICKER_EXTENSION
+#import "MEGAPicker-Swift.h"
+#else
+#import "MEGA-Swift.h"
+#endif
+
 @interface LTHPasscodeViewController () <UITextFieldDelegate>
 @property (nonatomic, strong) UIView      *coverView;
 @property (nonatomic, strong) UIView      *animatingView;
@@ -72,6 +81,7 @@ options:NSNumericSearch] != NSOrderedAscending)
 @property (nonatomic, strong) UILabel     *failedAttemptLabel;
 @property (nonatomic, strong) UILabel     *enterPasscodeLabel;
 @property (nonatomic, strong) UIButton    *OKButton;
+@property (nonatomic, strong) UIButton    *optionsButton;
 
 @property (nonatomic, strong) NSString    *tempPasscode;
 @property (nonatomic, assign) NSInteger   failedAttempts;
@@ -470,6 +480,10 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     [self _setupDigitFields];
 }
 
+- (void)setPasscodeType:(PasscodeType)passcodeType {
+    if (_passcodeType == passcodeType) { return; }
+    _passcodeType = passcodeType;
+}
 
 #pragma mark - View life
 - (void)viewDidLoad {
@@ -487,6 +501,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     [self _setupViews];
     [self _setupLabels];
     [self _setupOKButton];
+    [self _setupOptionsButton];
     
     // If on first launch we have a passcode, the number of digits should equal that.
     if ([self _doesPasscodeExist]) {
@@ -495,10 +510,53 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     [self _setupDigitFields];
     
     _passcodeTextField = [[UITextField alloc] initWithFrame: CGRectZero];
+    _passcodeTextField.textAlignment = NSTextAlignmentCenter;
     _passcodeTextField.delegate = self;
     _passcodeTextField.translatesAutoresizingMaskIntoConstraints = NO;
     
     [self.view setNeedsUpdateConstraints];
+}
+
+- (void)optionsCodeButtonTapped:(id)sender
+{
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertActionStyle style = UIAlertActionStyleDefault;
+
+    __weak typeof(self) weakSelf = self;
+
+    NSArray *types = @[@(PasscodeTypeFourDigits),
+                       @(PasscodeTypeSixDigits),
+                       @(PasscodeTypeCustomAlphanumeric)
+                      ];
+
+
+    NSArray *titles = @[NSLocalizedString(@"4-Digit Numeric Code", @""),
+                        NSLocalizedString(@"6-Digit Numeric Code", @""),
+                        NSLocalizedString(@"Custom Alphanumeric Code", @"")];
+
+    // Add all the buttons
+    for (NSInteger i = 0; i < types.count; i++) {
+        PasscodeType type = [types[i] integerValue];
+        if (type == self.passcodeType) { continue; }
+
+        id handler = ^(UIAlertAction *action) {
+            [weakSelf setPasscodeType:type];
+        };
+        UIAlertAction* action = [UIAlertAction actionWithTitle:titles[i] style:style handler:handler];
+        [action setValue:UIColor.mnz_green00A886 forKey:@"titleTextColor"];
+        [alertController addAction:action];
+    }
+
+    // Cancel button
+    UIAlertAction* cancel = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", @"") style:UIAlertActionStyleCancel handler:nil];
+    [cancel setValue:UIColor.mnz_green00A886 forKey:@"titleTextColor"];
+    [alertController addAction:cancel];
+    
+    alertController.modalPresentationStyle = UIModalPresentationPopover;
+    alertController.popoverPresentationController.sourceView = self.optionsButton;
+    alertController.popoverPresentationController.sourceRect = self.optionsButton.bounds;
+    alertController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionDown | UIPopoverArrowDirectionUp;
+    [self presentViewController:alertController animated:YES completion:nil];
 }
 
 
@@ -789,6 +847,16 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     _OKButton.translatesAutoresizingMaskIntoConstraints = NO;
 }
 
+- (void)_setupOptionsButton {
+    _optionsButton = [UIButton buttonWithType:UIButtonTypeSystem];
+    [_optionsButton setTitle:NSLocalizedString(@"Passcode Options", @"") forState:UIControlStateNormal];
+    _optionsButton.titleLabel.font = [UIFont systemFontOfSize:15.0f];
+    [_optionsButton setTitleColor:UIColor.mnz_green00A886 forState:UIControlStateNormal];
+    [_optionsButton sizeToFit];
+    [_optionsButton addTarget:self action:@selector(optionsCodeButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
+    [_animatingView addSubview:self.optionsButton];
+    _optionsButton.translatesAutoresizingMaskIntoConstraints = NO;
+}
 
 - (void)updateViewConstraints {
     [super updateViewConstraints];
@@ -1043,6 +1111,25 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     [self.view addConstraint:failedAttemptLabelCenterX];
     [self.view addConstraint:failedAttemptLabelCenterY];
     [self.view addConstraint:failedAttemptLabelHeight];
+    
+    NSLayoutConstraint *optionsButtonConstraintCenterX =
+    [NSLayoutConstraint constraintWithItem: _optionsButton
+                                 attribute: NSLayoutAttributeCenterX
+                                 relatedBy: NSLayoutRelationEqual
+                                    toItem: _animatingView
+                                 attribute: NSLayoutAttributeCenterX
+                                multiplier: 1.0f
+                                  constant: 0.0f];
+    NSLayoutConstraint *optionsButtonConstraintCenterY =
+    [NSLayoutConstraint constraintWithItem: _optionsButton
+                                 attribute: NSLayoutAttributeCenterY
+                                 relatedBy: NSLayoutRelationEqual
+                                    toItem: _failedAttemptLabel
+                                 attribute: NSLayoutAttributeCenterY
+                                multiplier: 1.0f
+                                  constant: _failedAttemptLabelGap];
+    [self.view addConstraint: optionsButtonConstraintCenterX];
+    [self.view addConstraint: optionsButtonConstraintCenterY];
 }
 
 
@@ -1496,26 +1583,31 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
         if (_isUserEnablingPasscode) {
             _enterPasscodeLabel.text = LTHPasscodeViewControllerStrings(self.reenterPasscodeString);
             _enterPasscodeInfoLabel.hidden = YES;
+            _optionsButton.hidden = YES;
         }
         else if (_isUserChangingPasscode) {
             _enterPasscodeLabel.text = LTHPasscodeViewControllerStrings(self.reenterNewPasscodeString);
             _enterPasscodeInfoLabel.hidden = YES;
+            _optionsButton.hidden = YES;
         }
     }
     else if (_isUserBeingAskedForNewPasscode) {
         if (_isUserEnablingPasscode || _isUserChangingPasscode) {
             _enterPasscodeLabel.text = LTHPasscodeViewControllerStrings(self.enterNewPasscodeString);
             _enterPasscodeInfoLabel.hidden = YES; //hidden for changing PIN
+            _optionsButton.hidden = NO;
         }
     }
     else {
         if (_isUserChangingPasscode) {
             _enterPasscodeLabel.text = LTHPasscodeViewControllerStrings(self.enterOldPasscodeString);
             _enterPasscodeInfoLabel.hidden = YES;
+            _optionsButton.hidden = YES;
         } else {
             _enterPasscodeLabel.text = LTHPasscodeViewControllerStrings(self.enterPasscodeString);
             //hidden for enabling PIN
             _enterPasscodeInfoLabel.hidden = !(_isUserEnablingPasscode && _displayAdditionalInfoDuringSettingPasscode);
+            _optionsButton.hidden = !_isUserEnablingPasscode;
         }
     }
     
