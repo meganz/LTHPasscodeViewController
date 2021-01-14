@@ -80,7 +80,6 @@ options:NSNumericSearch] != NSOrderedAscending)
 
 @property (nonatomic, strong) UILabel     *failedAttemptLabel;
 @property (nonatomic, strong) UILabel     *enterPasscodeLabel;
-@property (nonatomic, strong) UIButton    *OKButton;
 @property (nonatomic, strong) UIButton    *optionsButton;
 
 @property (nonatomic, strong) NSString    *tempPasscode;
@@ -504,7 +503,6 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     
     [self _setupViews];
     [self _setupLabels];
-    [self _setupOKButton];
     [self _setupOptionsButton];
     
     // If on first launch we have a passcode, the number of digits should equal that.
@@ -833,24 +831,6 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     return field;
 }
 
-
-- (void)_setupOKButton {
-    _OKButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    [_OKButton setTitle:LTHPasscodeViewControllerStrings(@"OK")
-               forState:UIControlStateNormal];
-    _OKButton.titleLabel.font = _labelFont;
-    _OKButton.backgroundColor = _enterPasscodeLabelBackgroundColor;
-    [_OKButton setTitleColor:_labelTextColor forState:UIControlStateNormal];
-    [_OKButton setTitleColor:UIColor.mnz_label forState:UIControlStateHighlighted];
-    [_OKButton addTarget:self
-                  action:@selector(_validateComplexPasscode)
-        forControlEvents:UIControlEventTouchUpInside];
-    [_complexPasscodeOverlayView addSubview:_OKButton];
-    
-    _OKButton.hidden = YES;
-    _OKButton.translatesAutoresizingMaskIntoConstraints = NO;
-}
-
 - (void)_setupOptionsButton {
     _optionsButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [_optionsButton setTitle:NSLocalizedString(@"Passcode Options", @"") forState:UIControlStateNormal];
@@ -1009,47 +989,25 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
         
     }
     else {
-        NSDictionary *viewsDictionary = NSDictionaryOfVariableBindings(_passcodeTextField, _OKButton);
-        
+        NSDictionary *viewsDictionary = NSDictionaryOfVariableBindings(_passcodeTextField);
+
         //TODO: specify different offsets through metrics
         NSArray *constraints =
-        [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[_passcodeTextField]-5-[_OKButton]-10-|"
+        [NSLayoutConstraint constraintsWithVisualFormat:@"H:|-10-[_passcodeTextField]-10-|"
                                                 options:0
                                                 metrics:nil
                                                   views:viewsDictionary];
-        
+
         [self.view addConstraints:constraints];
-        
+
         constraints =
         [NSLayoutConstraint constraintsWithVisualFormat:@"V:|-5-[_passcodeTextField]-5-|"
                                                 options:0
                                                 metrics:nil
                                                   views:viewsDictionary];
-        
+
         [self.view addConstraints:constraints];
-        
-        NSLayoutConstraint *buttonY =
-        [NSLayoutConstraint constraintWithItem: _OKButton
-                                     attribute: NSLayoutAttributeCenterY
-                                     relatedBy: NSLayoutRelationEqual
-                                        toItem: _passcodeTextField
-                                     attribute: NSLayoutAttributeCenterY
-                                    multiplier: 1.0f
-                                      constant: 0.0f];
-        
-        [self.view addConstraint:buttonY];
-        
-        NSLayoutConstraint *buttonHeight =
-        [NSLayoutConstraint constraintWithItem: _OKButton
-                                     attribute: NSLayoutAttributeHeight
-                                     relatedBy: NSLayoutRelationEqual
-                                        toItem: _passcodeTextField
-                                     attribute: NSLayoutAttributeHeight
-                                    multiplier: 1.0f
-                                      constant: 0.0f];
-        
-        [self.view addConstraint:buttonHeight];
-        
+
         NSLayoutConstraint *overlayViewLeftConstraint =
         [NSLayoutConstraint constraintWithItem: _complexPasscodeOverlayView
                                      attribute: NSLayoutAttributeLeading
@@ -1374,10 +1332,12 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
         
         if (typedString.length > _digitsCount) return NO;
     }
-    else {
-        _OKButton.hidden = [typedString length] == 0;
-    }
     
+    return YES;
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [self _validateComplexPasscode];
     return YES;
 }
 
@@ -1511,7 +1471,6 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
 - (void)_denyAccess {
     [self _resetTextFields];
     _passcodeTextField.text = @"";
-    _OKButton.hidden = YES;
     
     CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath: @"transform.translation.x"];
     animation.duration = 0.6;
@@ -1623,8 +1582,6 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
         self.navBar = nil;
     }
     _isUsingNavBar = NO;
-    
-    _OKButton.hidden = YES;
 }
 
 
