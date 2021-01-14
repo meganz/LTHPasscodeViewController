@@ -548,55 +548,6 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     [self.view setNeedsUpdateConstraints];
 }
 
-- (void)optionsCodeButtonTapped:(id)sender
-{
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
-    UIAlertActionStyle style = UIAlertActionStyleDefault;
-
-    __weak typeof(self) weakSelf = self;
-
-    NSArray *types = @[@(PasscodeTypeFourDigits),
-                       @(PasscodeTypeSixDigits),
-                       @(PasscodeTypeCustomAlphanumeric)
-                      ];
-
-
-    NSArray *titles = @[NSLocalizedString(@"4-Digit Numeric Code", @""),
-                        NSLocalizedString(@"6-Digit Numeric Code", @""),
-                        NSLocalizedString(@"Custom Alphanumeric Code", @"")];
-
-    // Set current passcodeType based on current displayed passcode input area, to determin action options
-    if (_passcodeTextField.hidden) {
-        _passcodeType = (_digitTextFieldsArray.count == 4) ? PasscodeTypeFourDigits : PasscodeTypeSixDigits;
-    } else {
-        _passcodeType = PasscodeTypeCustomAlphanumeric;
-    }
-    
-    // Add all the buttons
-    for (NSInteger i = 0; i < types.count; i++) {
-        PasscodeType type = [types[i] integerValue];
-        if (type == self.passcodeType) { continue; }
-
-        id handler = ^(UIAlertAction *action) {
-            [weakSelf setPasscodeTypeAndInputArea:type];
-        };
-        UIAlertAction* action = [UIAlertAction actionWithTitle:titles[i] style:style handler:handler];
-        [action setValue:UIColor.mnz_green00A886 forKey:@"titleTextColor"];
-        [alertController addAction:action];
-    }
-
-    // Cancel button
-    UIAlertAction* cancel = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", @"") style:UIAlertActionStyleCancel handler:nil];
-    [cancel setValue:UIColor.mnz_green00A886 forKey:@"titleTextColor"];
-    [alertController addAction:cancel];
-    
-    alertController.modalPresentationStyle = UIModalPresentationPopover;
-    alertController.popoverPresentationController.sourceView = self.optionsButton;
-    alertController.popoverPresentationController.sourceRect = self.optionsButton.bounds;
-    alertController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionDown | UIPopoverArrowDirectionUp;
-    [self presentViewController:alertController animated:YES completion:nil];
-}
-
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -1666,11 +1617,62 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     }
 }
 
+
 - (BOOL)isSimple {
     // Is in process of changing, but not finished ->
     // we need to display UI accordingly
     return (_isUserSwitchingBetweenPasscodeModes &&
             (_isUserBeingAskedForNewPasscode || _isUserConfirmingPasscode)) == !_isSimple;
+}
+
+
+- (void)optionsCodeButtonTapped:(id)sender
+{
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil message:nil preferredStyle:UIAlertControllerStyleActionSheet];
+    UIAlertActionStyle style = UIAlertActionStyleDefault;
+
+    __weak typeof(self) weakSelf = self;
+
+    NSArray *types = @[@(PasscodeTypeFourDigits),
+                       @(PasscodeTypeSixDigits),
+                       @(PasscodeTypeCustomAlphanumeric)
+                      ];
+
+
+    NSArray *titles = @[NSLocalizedString(@"4-Digit Numeric Code", @""),
+                        NSLocalizedString(@"6-Digit Numeric Code", @""),
+                        NSLocalizedString(@"Custom Alphanumeric Code", @"")];
+
+    // Set current passcodeType based on current displayed passcode input area, to determin action options
+    if (_passcodeTextField.hidden) {
+        _passcodeType = (_digitTextFieldsArray.count == 4) ? PasscodeTypeFourDigits : PasscodeTypeSixDigits;
+    } else {
+        _passcodeType = PasscodeTypeCustomAlphanumeric;
+    }
+    
+    // Add all the buttons
+    for (NSInteger i = 0; i < types.count; i++) {
+        PasscodeType type = [types[i] integerValue];
+        if (type == self.passcodeType) { continue; }
+
+        id handler = ^(UIAlertAction *action) {
+            [weakSelf setPasscodeTypeAndInputArea:type];
+        };
+        UIAlertAction* action = [UIAlertAction actionWithTitle:titles[i] style:style handler:handler];
+        [action setValue:UIColor.mnz_green00A886 forKey:@"titleTextColor"];
+        [alertController addAction:action];
+    }
+
+    // Cancel button
+    UIAlertAction* cancel = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", @"") style:UIAlertActionStyleCancel handler:nil];
+    [cancel setValue:UIColor.mnz_green00A886 forKey:@"titleTextColor"];
+    [alertController addAction:cancel];
+    
+    alertController.modalPresentationStyle = UIModalPresentationPopover;
+    alertController.popoverPresentationController.sourceView = self.optionsButton;
+    alertController.popoverPresentationController.sourceRect = self.optionsButton.bounds;
+    alertController.popoverPresentationController.permittedArrowDirections = UIPopoverArrowDirectionDown | UIPopoverArrowDirectionUp;
+    [self presentViewController:alertController animated:YES completion:nil];
 }
 
 #pragma mark - Notification Observers
