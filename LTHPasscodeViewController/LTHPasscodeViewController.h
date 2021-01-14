@@ -209,6 +209,10 @@
  */
 @property (nonatomic, strong) NSString *keychainPasscodeIsSimpleUsername;
 /**
+@brief The string to be used as username for the "passcodeType" in the Keychain.
+*/
+@property (nonatomic, strong) NSString *keychainPasscodeTypeUsername;
+/**
  @brief The string to be used as service name for all the Keychain entries.
  */
 @property (nonatomic, strong) NSString *keychainServiceName;

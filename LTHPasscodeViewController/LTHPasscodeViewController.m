@@ -190,6 +190,21 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
         _isSimple = YES;
     }
     
+    if ([LTHKeychainUtils getPasswordForUsername:_keychainPasscodeTypeUsername
+                                  andServiceName:_keychainServiceName
+                                           error:nil]) {
+        _passcodeType = (PasscodeType)[[LTHKeychainUtils getPasswordForUsername:_keychainPasscodeTypeUsername
+                                               andServiceName:_keychainServiceName
+                                                        error:nil] integerValue];
+    } else {
+        _passcodeType = PasscodeTypeFourDigits;
+    }
+    
+    if (_isSimple) {
+        _digitsCount = (_passcodeType == PasscodeTypeFourDigits) ? 4 : 6;
+        [self _setupDigitFields];
+    }
+    
     return [self _passcode].length != 0;
 }
 
@@ -312,6 +327,11 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     
     [LTHKeychainUtils storeUsername:_keychainPasscodeIsSimpleUsername
                         andPassword:[NSString stringWithFormat:@"%@", [self isSimple] ? @"YES" : @"NO"]
+                     forServiceName:_keychainServiceName
+                     updateExisting:YES
+                              error:nil];
+    [LTHKeychainUtils storeUsername:_keychainPasscodeTypeUsername
+                        andPassword:[NSString stringWithFormat:@"%ld", (long)_passcodeType]
                      forServiceName:_keychainServiceName
                      updateExisting:YES
                               error:nil];
@@ -482,9 +502,17 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
 - (void)setPasscodeType:(PasscodeType)passcodeType {
     if (_passcodeType == passcodeType) { return; }
     _passcodeType = passcodeType;
+}
+
+- (void)setPasscodeTypeAndInputArea:(PasscodeType)passcodeType {
+    _passcodeTextField.text = @"";
+    [self setPasscodeType:passcodeType];
     
-    _digitsCount = (passcodeType == PasscodeTypeSixDigits) ? 6 : 4;
-    [self _setupDigitFields];
+    if (passcodeType != PasscodeTypeCustomAlphanumeric) {
+        _digitsCount = (passcodeType == PasscodeTypeSixDigits) ? 6 : 4;
+        [self _setupDigitFields];
+    }
+    _isUserSwitchingBetweenPasscodeModes = YES;
     [self setIsSimple:!(passcodeType == PasscodeTypeCustomAlphanumeric) inViewController:nil asModal:self.displayedAsModal];
 }
 
@@ -515,6 +543,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     _passcodeTextField.textAlignment = NSTextAlignmentCenter;
     _passcodeTextField.delegate = self;
     _passcodeTextField.translatesAutoresizingMaskIntoConstraints = NO;
+    _passcodeTextField.returnKeyType = UIReturnKeyGo;
     
     [self.view setNeedsUpdateConstraints];
 }
@@ -536,13 +565,20 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
                         NSLocalizedString(@"6-Digit Numeric Code", @""),
                         NSLocalizedString(@"Custom Alphanumeric Code", @"")];
 
+    // Set current passcodeType based on current displayed passcode input area, to determin action options
+    if (_passcodeTextField.hidden) {
+        _passcodeType = (_digitTextFieldsArray.count == 4) ? PasscodeTypeFourDigits : PasscodeTypeSixDigits;
+    } else {
+        _passcodeType = PasscodeTypeCustomAlphanumeric;
+    }
+    
     // Add all the buttons
     for (NSInteger i = 0; i < types.count; i++) {
         PasscodeType type = [types[i] integerValue];
         if (type == self.passcodeType) { continue; }
 
         id handler = ^(UIAlertAction *action) {
-            [weakSelf setPasscodeType:type];
+            [weakSelf setPasscodeTypeAndInputArea:type];
         };
         UIAlertAction* action = [UIAlertAction actionWithTitle:titles[i] style:style handler:handler];
         [action setValue:UIColor.mnz_green00A886 forKey:@"titleTextColor"];
@@ -752,6 +788,8 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     _complexPasscodeOverlayView = [[UIView alloc] initWithFrame:CGRectZero];
     _complexPasscodeOverlayView.backgroundColor = UIColor.mnz_background;
     _complexPasscodeOverlayView.translatesAutoresizingMaskIntoConstraints = NO;
+    _complexPasscodeOverlayView.layer.borderWidth = 1;
+    _complexPasscodeOverlayView.layer.borderColor = [UIColor.mnz_gray3C3C43 colorWithAlphaComponent:0.3].CGColor;
     
     _simplePasscodeView = [[UIView alloc] initWithFrame:CGRectZero];
     _simplePasscodeView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -1337,6 +1375,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
+    [textField resignFirstResponder];
     [self _validateComplexPasscode];
     return YES;
 }
@@ -1760,6 +1799,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     _maxNumberOfAllowedFailedAttempts = 0;
     _usesKeychain = YES;
     _isSimple = YES;
+    _passcodeType = PasscodeTypeFourDigits;
     _displayedAsModal = YES;
     _hidesBackButton = YES;
     _hidesCancelButton = YES;
@@ -1808,7 +1848,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
 
 - (void)_loadColorDefaults {
     // Backgrounds
-    _backgroundColor = UIColor.mnz_background;
+    _backgroundColor = [UIColor mnz_mainBarsForTraitCollection:self.traitCollection];
     _passcodeBackgroundColor = [UIColor clearColor];
     _coverViewBackgroundColor = UIColor.mnz_background;
     _failedAttemptLabelBackgroundColor =  UIColor.mnz_redError;
@@ -1827,6 +1867,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     _keychainServiceName = @"demoServiceName";
     _keychainTimerDurationUsername = @"passcodeTimerDuration";
     _keychainPasscodeIsSimpleUsername = @"passcodeIsSimple";
+    _keychainPasscodeTypeUsername = @"passcodeType";
     _keychainAllowUnlockWithBiometrics = @"allowUnlockWithTouchID";
 }
 
