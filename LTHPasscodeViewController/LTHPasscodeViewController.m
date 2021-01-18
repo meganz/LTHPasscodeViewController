@@ -79,6 +79,7 @@ options:NSNumericSearch] != NSOrderedAscending)
 @property (nonatomic, strong) NSMutableArray<UITextField *> *digitTextFieldsArray;
 
 @property (nonatomic, strong) UILabel     *failedAttemptLabel;
+@property (nonatomic, strong) UILabel     *eraseLocalDataLabel;
 @property (nonatomic, strong) UILabel     *enterPasscodeLabel;
 @property (nonatomic, strong) UIButton    *optionsButton;
 
@@ -780,12 +781,25 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     _failedAttemptLabel.textAlignment = NSTextAlignmentCenter;
     [_animatingView addSubview: _failedAttemptLabel];
     
+    _eraseLocalDataLabel = [[UILabel alloc] initWithFrame: CGRectZero];
+    _eraseLocalDataLabel.text = NSLocalizedString(@"failedAttempstSectionTitle", @"Log out and erase all local data on MEGA’s app after 10 failed passcode attempts");
+    _eraseLocalDataLabel.numberOfLines = 0;
+    _eraseLocalDataLabel.backgroundColor = [UIColor clearColor];
+    _eraseLocalDataLabel.hidden = YES;
+    _eraseLocalDataLabel.textColor = UIColor.mnz_redError;
+    _eraseLocalDataLabel.font = _labelFont;
+    _eraseLocalDataLabel.textAlignment = NSTextAlignmentCenter;
+    _eraseLocalDataLabel.lineBreakMode = NSLineBreakByWordWrapping;
+    _eraseLocalDataLabel.numberOfLines = 0;
+    [_animatingView addSubview: _eraseLocalDataLabel];
+    
     _enterPasscodeLabel.text = _isUserChangingPasscode ? LTHPasscodeViewControllerStrings(self.enterOldPasscodeString) : LTHPasscodeViewControllerStrings(self.enterPasscodeString);
     _enterPasscodeInfoLabel.text = LTHPasscodeViewControllerStrings(self.enterPasscodeInfoString);
     
     _enterPasscodeLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _enterPasscodeInfoLabel.translatesAutoresizingMaskIntoConstraints = NO;
     _failedAttemptLabel.translatesAutoresizingMaskIntoConstraints = NO;
+    _eraseLocalDataLabel.translatesAutoresizingMaskIntoConstraints = NO;
 }
 
 
@@ -1062,6 +1076,43 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     [self.view addConstraint:failedAttemptLabelCenterX];
     [self.view addConstraint:failedAttemptLabelCenterY];
     [self.view addConstraint:failedAttemptLabelHeight];
+    
+    NSLayoutConstraint *eraseLocalDataLabelCenterX =
+    [NSLayoutConstraint constraintWithItem: _eraseLocalDataLabel
+                                 attribute: NSLayoutAttributeCenterX
+                                 relatedBy: NSLayoutRelationEqual
+                                    toItem: _animatingView
+                                 attribute: NSLayoutAttributeCenterX
+                                multiplier: 1.0f
+                                  constant: 0.0f];
+    NSLayoutConstraint *eraseLocalDataLabelCenterY =
+    [NSLayoutConstraint constraintWithItem: _eraseLocalDataLabel
+                                 attribute: NSLayoutAttributeCenterY
+                                 relatedBy: NSLayoutRelationEqual
+                                    toItem: _failedAttemptLabel
+                                 attribute: NSLayoutAttributeBottom
+                                multiplier: 1.0f
+                                  constant: _verticalGap];
+    NSLayoutConstraint *eraseLocalDataLabelHeight =
+    [NSLayoutConstraint constraintWithItem: _eraseLocalDataLabel
+                                 attribute: NSLayoutAttributeHeight
+                                 relatedBy: NSLayoutRelationEqual
+                                    toItem: nil
+                                 attribute: NSLayoutAttributeNotAnAttribute
+                                multiplier: 1.0f
+                                  constant: LTHFailedAttemptLabelHeight + 6.0f];
+    NSLayoutConstraint *eraseLocalDataLabelLeading =
+    [NSLayoutConstraint constraintWithItem: _eraseLocalDataLabel
+                                 attribute: NSLayoutAttributeLeading
+                                 relatedBy: NSLayoutRelationEqual
+                                    toItem: _animatingView
+                                 attribute: NSLayoutAttributeLeading
+                                multiplier: 1.0f
+                                  constant: 40];
+    [self.view addConstraint:eraseLocalDataLabelCenterX];
+    [self.view addConstraint:eraseLocalDataLabelCenterY];
+    [self.view addConstraint:eraseLocalDataLabelHeight];
+    [self.view addConstraint:eraseLocalDataLabelLeading];
     
     NSLayoutConstraint *optionsButtonConstraintCenterX =
     [NSLayoutConstraint constraintWithItem: _optionsButton
@@ -1412,6 +1463,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     [self.view setNeedsUpdateConstraints];
     
     _failedAttemptLabel.hidden = YES;
+    _eraseLocalDataLabel.hidden = YES;
     
     CATransition *transition = [CATransition animation];
     [self performSelector: @selector(_resetUI) withObject: nil afterDelay: 0.1f];
@@ -1446,6 +1498,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     _isUserBeingAskedForNewPasscode = NO;
     _isUserConfirmingPasscode = YES;
     _failedAttemptLabel.hidden = YES;
+    _eraseLocalDataLabel.hidden = YES;
     
     CATransition *transition = [CATransition animation];
     [self performSelector: @selector(_resetUI) withObject: nil afterDelay: 0.1f];
@@ -1495,6 +1548,10 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     _failedAttemptLabel.layer.cornerRadius = LTHiPad ? 19 : 14;
     _failedAttemptLabel.clipsToBounds = true;
     _failedAttemptLabel.hidden = NO;
+    
+    if (_failedAttempts >= 5) {
+        _eraseLocalDataLabel.hidden = NO;
+    }
 }
 
 
@@ -1529,7 +1586,10 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     [self _resetTextFields];
     _failedAttemptLabel.backgroundColor	= _failedAttemptLabelBackgroundColor;
     _failedAttemptLabel.textColor = _failedAttemptLabelTextColor;
-    if (_failedAttempts == 0) _failedAttemptLabel.hidden = YES;
+    if (_failedAttempts == 0) {
+        _failedAttemptLabel.hidden = YES;
+        _eraseLocalDataLabel.hidden = YES;
+    }
     
     _passcodeTextField.text = @"";
     if (_isUserConfirmingPasscode) {
@@ -1595,6 +1655,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     _failedAttemptLabel.layer.borderWidth = 0;
     _failedAttemptLabel.layer.borderColor = [UIColor clearColor].CGColor;
     _failedAttemptLabel.textColor = _labelTextColor;
+    _eraseLocalDataLabel.hidden = YES;
     _optionsButton.hidden = NO;
 }
 
