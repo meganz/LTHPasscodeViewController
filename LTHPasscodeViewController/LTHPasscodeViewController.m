@@ -1457,6 +1457,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     
     CATransition *transition = [CATransition animation];
     [self performSelector: @selector(_resetUI) withObject: nil afterDelay: 0.1f];
+    [_passcodeTextField becomeFirstResponder];
     [transition setType: kCATransitionPush];
     [transition setSubtype: kCATransitionFromRight];
     [transition setDuration: _slideAnimationDuration];
@@ -1475,6 +1476,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     [self performSelector: @selector(_resetUIForReEnteringNewPasscode)
                withObject: nil
                afterDelay: 0.1f];
+    [_passcodeTextField becomeFirstResponder];
     [transition setType: kCATransitionPush];
     [transition setSubtype: kCATransitionFromRight];
     [transition setDuration: _slideAnimationDuration];
@@ -1492,6 +1494,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     
     CATransition *transition = [CATransition animation];
     [self performSelector: @selector(_resetUI) withObject: nil afterDelay: 0.1f];
+    [_passcodeTextField becomeFirstResponder];
     [transition setType: kCATransitionPush];
     [transition setSubtype: kCATransitionFromRight];
     [transition setDuration: _slideAnimationDuration];
