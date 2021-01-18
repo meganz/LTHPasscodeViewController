@@ -782,7 +782,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     [_animatingView addSubview: _failedAttemptLabel];
     
     _eraseLocalDataLabel = [[UILabel alloc] initWithFrame: CGRectZero];
-    _eraseLocalDataLabel.text = NSLocalizedString(@"failedAttempstSectionTitle", @"Log out and erase all local data on MEGA’s app after 10 failed passcode attempts");
+    _eraseLocalDataLabel.text = NSLocalizedString(@"failedAttempstSectionTitle", @"Footer text that explain what will happen if reach the max number of failed attempts");
     _eraseLocalDataLabel.numberOfLines = 0;
     _eraseLocalDataLabel.backgroundColor = [UIColor clearColor];
     _eraseLocalDataLabel.hidden = YES;
