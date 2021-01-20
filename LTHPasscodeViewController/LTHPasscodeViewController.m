@@ -57,15 +57,6 @@ options:NSNumericSearch] != NSOrderedAscending)
 #define LTHMainWindow [UIApplication sharedApplication].windows.firstObject
 #endif
 
-#import "MEGAChatSdk.h"
-#ifdef MNZ_SHARE_EXTENSION
-#import "MEGAShare-Swift.h"
-#elif MNZ_PICKER_EXTENSION
-#import "MEGAPicker-Swift.h"
-#else
-#import "MEGA-Swift.h"
-#endif
-
 @interface LTHPasscodeViewController () <UITextFieldDelegate>
 @property (nonatomic, strong) UIView      *coverView;
 @property (nonatomic, strong) UIView      *animatingView;
@@ -741,7 +732,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     _complexPasscodeOverlayView.backgroundColor = UIColor.mnz_background;
     _complexPasscodeOverlayView.translatesAutoresizingMaskIntoConstraints = NO;
     _complexPasscodeOverlayView.layer.borderWidth = 1;
-    _complexPasscodeOverlayView.layer.borderColor = [UIColor.mnz_gray3C3C43 colorWithAlphaComponent:0.3].CGColor;
+    _complexPasscodeOverlayView.layer.borderColor = [UIColor colorWithRed:60.0/255.0 green:60.0/255.0 blue:67.0/255.0 alpha:0.3].CGColor;
     
     _simplePasscodeView = [[UIView alloc] initWithFrame:CGRectZero];
     _simplePasscodeView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -1920,7 +1911,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     _passcodeTextColor = UIColor.mnz_label;
     _failedAttemptLabelTextColor = UIColor.mnz_background;
     _eraseLocalDataLabelTextColor = UIColor.mnz_redError;
-    _optionsTextColor = UIColor.mnz_green00A886;
+    _optionsTextColor = [UIColor colorWithRed:0 green:168.0/255.0 blue:134.0/255.0 alpha:1.0];
 }
 
 
