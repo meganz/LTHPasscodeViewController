@@ -79,6 +79,7 @@ options:NSNumericSearch] != NSOrderedAscending)
 
 @property (nonatomic, assign) CGFloat     modifierForBottomVerticalGap;
 @property (nonatomic, assign) CGFloat     fontSizeModifier;
+@property (nonatomic, assign) CGFloat     keyboardHeight;
 
 @property (nonatomic, assign) BOOL        newPasscodeEqualsOldPasscode;
 @property (nonatomic, assign) BOOL        passcodeAlreadyExists;
@@ -508,6 +509,10 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     [self setIsSimple:!(passcodeType == PasscodeTypeCustomAlphanumeric) inViewController:nil asModal:self.displayedAsModal];
 }
 
+- (void)keyboardWillChangeFrame:(NSNotification *)notification {
+    _keyboardHeight = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue].size.height;
+}
+
 #pragma mark - View life
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -538,6 +543,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     _passcodeTextField.returnKeyType = UIReturnKeyGo;
     
     [self.view setNeedsUpdateConstraints];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
 }
 
 
@@ -1103,16 +1109,16 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
                                  attribute: NSLayoutAttributeCenterX
                                 multiplier: 1.0f
                                   constant: 0.0f];
-    NSLayoutConstraint *optionsButtonConstraintCenterY =
+    NSLayoutConstraint *optionsButtonConstraintBottom =
     [NSLayoutConstraint constraintWithItem: _optionsButton
-                                 attribute: NSLayoutAttributeCenterY
+                                 attribute: NSLayoutAttributeBottom
                                  relatedBy: NSLayoutRelationEqual
-                                    toItem: _failedAttemptLabel
-                                 attribute: NSLayoutAttributeCenterY
+                                    toItem: self.view
+                                 attribute: NSLayoutAttributeBottom
                                 multiplier: 1.0f
-                                  constant: _optionsButtonGap];
+                                  constant: -(_keyboardHeight + _verticalGap)];
     [self.view addConstraint: optionsButtonConstraintCenterX];
-    [self.view addConstraint: optionsButtonConstraintCenterY];
+    [self.view addConstraint: optionsButtonConstraintBottom];
 }
 
 
@@ -1880,7 +1886,6 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     _verticalGap = LTHiPad ? 60.0f : 25.0f;
     _modifierForBottomVerticalGap = LTHiPad ? 2.6f : 3.0f;
     _failedAttemptLabelGap = _verticalGap * _modifierForBottomVerticalGap - 2.0f;
-    _optionsButtonGap = _verticalGap * _modifierForBottomVerticalGap - 2.0f;
     _passcodeOverlayHeight = LTHiPad ? 96.0f : 40.0f;
 }
 
