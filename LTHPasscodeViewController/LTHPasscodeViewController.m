@@ -1111,12 +1111,12 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
                                   constant: 0.0f];
     NSLayoutConstraint *optionsButtonConstraintBottom =
     [NSLayoutConstraint constraintWithItem: _optionsButton
-                                 attribute: NSLayoutAttributeBottom
+                                 attribute: NSLayoutAttributeTop
                                  relatedBy: NSLayoutRelationEqual
                                     toItem: self.view
-                                 attribute: NSLayoutAttributeBottom
+                                 attribute: NSLayoutAttributeTop
                                 multiplier: 1.0f
-                                  constant: -(_keyboardHeight + _verticalGap)];
+                                  constant: self.view.frame.size.height - _keyboardHeight - _verticalGap - _optionsButton.frame.size.height];
     [self.view addConstraint: optionsButtonConstraintCenterX];
     [self.view addConstraint: optionsButtonConstraintBottom];
 }
@@ -2105,5 +2105,12 @@ UIInterfaceOrientationMask UIInterfaceOrientationMaskFromOrientation(UIInterface
     return 1 << orientation;
 }
 
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context){}
+                                 completion:^(id<UIViewControllerTransitionCoordinatorContext> context){
+        [self.view setNeedsUpdateConstraints];
+    }];
+}
 
 @end
