@@ -834,7 +834,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     _optionsButton = [UIButton buttonWithType:UIButtonTypeSystem];
     [_optionsButton setTitle:NSLocalizedString(@"Passcode Options", @"") forState:UIControlStateNormal];
     _optionsButton.titleLabel.font = _optionsButtonFont;
-    [_optionsButton setTitleColor:_optionsTextColor forState:UIControlStateNormal];
+    [_optionsButton setTitleColor:_optionsButtonTextColor forState:UIControlStateNormal];
     [_optionsButton sizeToFit];
     [_optionsButton addTarget:self action:@selector(optionsCodeButtonTapped:) forControlEvents:UIControlEventTouchUpInside];
     [_animatingView addSubview:self.optionsButton];
@@ -1711,13 +1711,12 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
             [weakSelf setPasscodeTypeAndInputArea:type];
         };
         UIAlertAction* action = [UIAlertAction actionWithTitle:titles[i] style:style handler:handler];
-        [action setValue:_optionsTextColor forKey:@"titleTextColor"];
         [alertController addAction:action];
     }
 
     // Cancel button
     UIAlertAction* cancel = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", @"") style:UIAlertActionStyleCancel handler:nil];
-    [cancel setValue:_optionsTextColor forKey:@"titleTextColor"];
+    [cancel setValue:_cancelButtonTextColor forKey:@"titleTextColor"];
     [alertController addAction:cancel];
     
     alertController.modalPresentationStyle = UIModalPresentationPopover;
@@ -1916,7 +1915,8 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     _passcodeTextColor = UIColor.mnz_label;
     _failedAttemptLabelTextColor = UIColor.mnz_background;
     _eraseLocalDataLabelTextColor = UIColor.mnz_redError;
-    _optionsTextColor = [UIColor colorWithRed:0 green:168.0/255.0 blue:134.0/255.0 alpha:1.0];
+    _optionsButtonTextColor = [UIColor colorWithRed:0 green:168.0/255.0 blue:134.0/255.0 alpha:1.0];
+    _cancelButtonTextColor = [UIColor mnz_primaryGrayForTraitCollection:self.traitCollection];
 }
 
 

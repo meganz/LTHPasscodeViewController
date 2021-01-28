@@ -197,9 +197,13 @@
  */
 @property (nonatomic, strong) UIColor *eraseLocalDataLabelTextColor;
 /**
- @brief The text color for the options.
+ @brief The text color for the options button.
  */
-@property (nonatomic, strong) UIColor *optionsTextColor;
+@property (nonatomic, strong) UIColor *optionsButtonTextColor;
+/**
+ @brief The text color for the cancel button.
+ */
+@property (nonatomic, strong) UIColor *cancelButtonTextColor;
 /**
  @brief The tint color to apply to the navigation items and bar button items.
  */
