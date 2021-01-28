@@ -205,6 +205,10 @@
  */
 @property (nonatomic, strong) UIColor *cancelButtonTextColor;
 /**
+ @brief The border color for the textFiled.
+ */
+@property (nonatomic, strong) UIColor *textFieldBorderColor;
+/**
  @brief The tint color to apply to the navigation items and bar button items.
  */
 @property (nonatomic, strong) UIColor *navigationBarTintColor;

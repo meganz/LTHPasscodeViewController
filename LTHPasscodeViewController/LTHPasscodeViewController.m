@@ -737,8 +737,6 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     _complexPasscodeOverlayView = [[UIView alloc] initWithFrame:CGRectZero];
     _complexPasscodeOverlayView.backgroundColor = UIColor.mnz_background;
     _complexPasscodeOverlayView.translatesAutoresizingMaskIntoConstraints = NO;
-    _complexPasscodeOverlayView.layer.borderWidth = 1;
-    _complexPasscodeOverlayView.layer.borderColor = [UIColor colorWithRed:60.0/255.0 green:60.0/255.0 blue:67.0/255.0 alpha:0.3].CGColor;
     
     _simplePasscodeView = [[UIView alloc] initWithFrame:CGRectZero];
     _simplePasscodeView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -841,6 +839,18 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     _optionsButton.translatesAutoresizingMaskIntoConstraints = NO;
 }
 
+- (void)_setupPasscodeOverlayBorder {
+    CALayer *topBorder = [CALayer layer];
+    topBorder.frame = CGRectMake(0, 0, self.view.frame.size.width, 1);
+    topBorder.backgroundColor = _textFieldBorderColor.CGColor;
+    [_complexPasscodeOverlayView.layer addSublayer:topBorder];
+
+    CALayer *bottomBorder = [CALayer layer];
+    bottomBorder.frame = CGRectMake(0, _passcodeOverlayHeight - 1, self.view.frame.size.width, 1);
+    bottomBorder.backgroundColor = _textFieldBorderColor.CGColor;
+    [_complexPasscodeOverlayView.layer addSublayer:bottomBorder];
+}
+
 - (void)updateViewConstraints {
     [super updateViewConstraints];
     [self.view removeConstraints:self.view.constraints];
@@ -862,6 +872,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     }
     else {
         [_complexPasscodeOverlayView addSubview:_passcodeTextField];
+        [self _setupPasscodeOverlayBorder];
         
         // If we come from simple state some constraints are added even if
         // translatesAutoresizingMaskIntoConstraints = NO,
@@ -1917,6 +1928,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     _eraseLocalDataLabelTextColor = UIColor.mnz_redError;
     _optionsButtonTextColor = [UIColor colorWithRed:0 green:168.0/255.0 blue:134.0/255.0 alpha:1.0];
     _cancelButtonTextColor = [UIColor mnz_primaryGrayForTraitCollection:self.traitCollection];
+    _textFieldBorderColor = [UIColor colorWithRed:60.0/255.0 green:60.0/255.0 blue:67.0/255.0 alpha:0.3];
 }
 
 
@@ -2110,6 +2122,7 @@ UIInterfaceOrientationMask UIInterfaceOrientationMaskFromOrientation(UIInterface
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context){}
                                  completion:^(id<UIViewControllerTransitionCoordinatorContext> context){
         [self.view setNeedsUpdateConstraints];
+        self.complexPasscodeOverlayView.layer.sublayers = nil;
     }];
 }
 
