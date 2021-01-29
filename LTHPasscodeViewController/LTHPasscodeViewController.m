@@ -2121,8 +2121,8 @@ UIInterfaceOrientationMask UIInterfaceOrientationMaskFromOrientation(UIInterface
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context){}
                                  completion:^(id<UIViewControllerTransitionCoordinatorContext> context){
-        [self.view setNeedsUpdateConstraints];
         self.complexPasscodeOverlayView.layer.sublayers = nil;
+        [self.view setNeedsUpdateConstraints];
     }];
 }
 
