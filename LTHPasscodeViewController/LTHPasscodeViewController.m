@@ -1656,7 +1656,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     _failedAttemptLabel.backgroundColor = [UIColor clearColor];
     _failedAttemptLabel.layer.borderWidth = 0;
     _failedAttemptLabel.layer.borderColor = [UIColor clearColor].CGColor;
-    _failedAttemptLabel.textColor = _labelTextColor;
+    _failedAttemptLabel.textColor = UIColor.mnz_redError;
     _eraseLocalDataLabel.hidden = YES;
     _optionsButton.hidden = NO;
 }
