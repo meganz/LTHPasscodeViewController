@@ -541,6 +541,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     _passcodeTextField.delegate = self;
     _passcodeTextField.translatesAutoresizingMaskIntoConstraints = NO;
     _passcodeTextField.returnKeyType = UIReturnKeyGo;
+    _passcodeTextField.enablesReturnKeyAutomatically = YES;
     
     [self.view setNeedsUpdateConstraints];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardWillChangeFrame:) name:UIKeyboardWillChangeFrameNotification object:nil];
