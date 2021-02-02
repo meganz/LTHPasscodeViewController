@@ -1914,7 +1914,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
 
 - (void)_loadColorDefaults {
     // Backgrounds
-    _backgroundColor = [UIColor mnz_mainBarsForTraitCollection:self.traitCollection];
+    _backgroundColor = UIColor.mnz_background;
     _passcodeBackgroundColor = [UIColor clearColor];
     _coverViewBackgroundColor = UIColor.mnz_background;
     _failedAttemptLabelBackgroundColor =  UIColor.mnz_redError;
@@ -1927,7 +1927,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     _failedAttemptLabelTextColor = UIColor.mnz_background;
     _eraseLocalDataLabelTextColor = UIColor.mnz_redError;
     _optionsButtonTextColor = [UIColor colorWithRed:0 green:168.0/255.0 blue:134.0/255.0 alpha:1.0];
-    _cancelButtonTextColor = [UIColor mnz_primaryGrayForTraitCollection:self.traitCollection];
+    _cancelButtonTextColor = UIColor.mnz_label;
     _textFieldBorderColor = [UIColor colorWithRed:60.0/255.0 green:60.0/255.0 blue:67.0/255.0 alpha:0.3];
 }
 
