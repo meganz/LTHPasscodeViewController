@@ -189,8 +189,6 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
         _passcodeType = (PasscodeType)[[LTHKeychainUtils getPasswordForUsername:_keychainPasscodeTypeUsername
                                                andServiceName:_keychainServiceName
                                                         error:nil] integerValue];
-    } else {
-        _passcodeType = PasscodeTypeFourDigits;
     }
     
     if (_isSimple) {
@@ -292,6 +290,12 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     }
     
     [LTHKeychainUtils deleteItemForUsername:_keychainPasscodeUsername
+                             andServiceName:_keychainServiceName
+                                      error:nil];
+    [LTHKeychainUtils deleteItemForUsername:_keychainPasscodeTypeUsername
+                             andServiceName:_keychainServiceName
+                                      error:nil];
+    [LTHKeychainUtils deleteItemForUsername:_keychainPasscodeIsSimpleUsername
                              andServiceName:_keychainServiceName
                                       error:nil];
 }
@@ -1718,7 +1722,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     // Add all the buttons
     for (NSInteger i = 0; i < types.count; i++) {
         PasscodeType type = [types[i] integerValue];
-        if (type == self.passcodeType) { continue; }
+        if (type == _passcodeType) { continue; }
 
         id handler = ^(UIAlertAction *action) {
             [weakSelf setPasscodeTypeAndInputArea:type];
@@ -1740,7 +1744,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
 
 #pragma mark - Notification Observers
 - (void)_applicationDidEnterBackground {
-    if ([self _doesPasscodeExist]) {
+    if ([self _passcode].length != 0) {
         if ([_passcodeTextField isFirstResponder]) {
             _useFallbackPasscode = NO;
             [_passcodeTextField resignFirstResponder];
@@ -1770,7 +1774,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
 
 
 - (void)_applicationWillEnterForeground {
-    if ([self _doesPasscodeExist] &&
+    if ([self _passcode].length != 0 &&
         [self _didPasscodeTimerEnd]) {
         _useFallbackPasscode = NO;
         
@@ -1792,7 +1796,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
 
 
 - (void)_applicationWillResignActive {
-    if ([self _doesPasscodeExist] && !([self isCurrentlyOnScreen] && [self displayedAsLockScreen])) {
+    if ([self _passcode].length != 0 && !([self isCurrentlyOnScreen] && [self displayedAsLockScreen])) {
         _useFallbackPasscode = NO;
         [self _saveTimerStartTime];
     }
