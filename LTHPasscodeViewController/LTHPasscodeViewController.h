@@ -201,10 +201,6 @@
  */
 @property (nonatomic, strong) UIColor *optionsButtonTextColor;
 /**
- @brief The text color for the cancel button.
- */
-@property (nonatomic, strong) UIColor *cancelButtonTextColor;
-/**
  @brief The border color for the textFiled.
  */
 @property (nonatomic, strong) UIColor *textFieldBorderColor;
