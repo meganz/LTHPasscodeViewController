@@ -179,8 +179,6 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
         _isSimple = [[LTHKeychainUtils getPasswordForUsername:_keychainPasscodeIsSimpleUsername
                                                andServiceName:_keychainServiceName
                                                         error:nil] boolValue];
-    } else {
-        _isSimple = YES;
     }
     
     if ([LTHKeychainUtils getPasswordForUsername:_keychainPasscodeTypeUsername
@@ -618,6 +616,9 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     _isUserEnablingPasscode = NO;
     _isUserTurningPasscodeOff = NO;
     _isUserSwitchingBetweenPasscodeModes = NO;
+    // reset to previous passcode type
+    [self _doesPasscodeExist];
+    [self.view setNeedsUpdateConstraints];
     [self _resetUI];
     [_passcodeTextField resignFirstResponder];
     
@@ -1590,7 +1591,6 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
 
 
 - (void)_resetUI {
-    [self _setupDigitFields];
     [self _resetTextFields];
     _failedAttemptLabel.backgroundColor	= _failedAttemptLabelBackgroundColor;
     _failedAttemptLabel.textColor = _failedAttemptLabelTextColor;
