@@ -1363,19 +1363,22 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
                                                                     withString: string];
     
     if (self.isSimple) {
-        
-        [_digitTextFieldsArray enumerateObjectsUsingBlock:^(UITextField * _Nonnull textField, NSUInteger idx, BOOL * _Nonnull stop) {
-            textField.secureTextEntry = typedString.length > idx;
-        }];
-        
-        if (typedString.length == _digitsCount) {
-            // Make the last bullet show up
-            [self performSelector: @selector(_validatePasscode:)
-                       withObject: typedString
-                       afterDelay: 0.15];
+        if ([string rangeOfCharacterFromSet:[NSCharacterSet decimalDigitCharacterSet].invertedSet].location != NSNotFound) {
+            return NO;
+        } else {
+            [_digitTextFieldsArray enumerateObjectsUsingBlock:^(UITextField * _Nonnull textField, NSUInteger idx, BOOL * _Nonnull stop) {
+                textField.secureTextEntry = typedString.length > idx;
+            }];
+            
+            if (typedString.length == _digitsCount) {
+                // Make the last bullet show up
+                [self performSelector: @selector(_validatePasscode:)
+                           withObject: typedString
+                           afterDelay: 0.15];
+            }
+            
+            if (typedString.length > _digitsCount) return NO;
         }
-        
-        if (typedString.length > _digitsCount) return NO;
     }
     
     return YES;
