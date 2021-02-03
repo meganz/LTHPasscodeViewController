@@ -838,7 +838,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
 
 - (void)_setupOptionsButton {
     _optionsButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [_optionsButton setTitle:NSLocalizedString(@"Passcode Options", @"") forState:UIControlStateNormal];
+    [_optionsButton setTitle:NSLocalizedString(@"Passcode Options", @"Button text to change the passcode type.") forState:UIControlStateNormal];
     _optionsButton.titleLabel.font = _optionsButtonFont;
     [_optionsButton setTitleColor:_optionsButtonTextColor forState:UIControlStateNormal];
     [_optionsButton sizeToFit];
@@ -1711,7 +1711,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
                       ];
 
 
-    NSArray *titles = @[NSLocalizedString(@"4-Digit Numeric Code", @""),
+    NSArray *titles = @[NSLocalizedString(@"4-Digit Numeric Code", @"Action text to change to 4-Digit Numeric passcode type."),
                         NSLocalizedString(@"6-Digit Numeric Code", @""),
                         NSLocalizedString(@"Custom Alphanumeric Code", @"")];
 
@@ -1735,7 +1735,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     }
 
     // Cancel button
-    UIAlertAction* cancel = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", @"") style:UIAlertActionStyleCancel handler:nil];
+    UIAlertAction* cancel = [UIAlertAction actionWithTitle:NSLocalizedString(@"cancel", @"Button title to cancel something") style:UIAlertActionStyleCancel handler:nil];
     [alertController addAction:cancel];
     
     alertController.modalPresentationStyle = UIModalPresentationPopover;
