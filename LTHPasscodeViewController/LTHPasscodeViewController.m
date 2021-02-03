@@ -743,6 +743,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     _complexPasscodeOverlayView = [[UIView alloc] initWithFrame:CGRectZero];
     _complexPasscodeOverlayView.backgroundColor = UIColor.mnz_background;
     _complexPasscodeOverlayView.translatesAutoresizingMaskIntoConstraints = NO;
+    [self _setupPasscodeOverlayBorder];
     
     _simplePasscodeView = [[UIView alloc] initWithFrame:CGRectZero];
     _simplePasscodeView.translatesAutoresizingMaskIntoConstraints = NO;
@@ -878,7 +879,6 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     }
     else {
         [_complexPasscodeOverlayView addSubview:_passcodeTextField];
-        [self _setupPasscodeOverlayBorder];
         
         // If we come from simple state some constraints are added even if
         // translatesAutoresizingMaskIntoConstraints = NO,
@@ -2126,6 +2126,7 @@ UIInterfaceOrientationMask UIInterfaceOrientationMaskFromOrientation(UIInterface
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context){}
                                  completion:^(id<UIViewControllerTransitionCoordinatorContext> context){
         self.complexPasscodeOverlayView.layer.sublayers = nil;
+        [self _setupPasscodeOverlayBorder];
         [self.view setNeedsUpdateConstraints];
     }];
 }
