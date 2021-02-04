@@ -798,7 +798,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     
     _eraseLocalDataLabel = [[UILabel alloc] initWithFrame: CGRectZero];
     _eraseLocalDataLabel.text = NSLocalizedString(@"failedAttempstSectionTitle", @"Footer text that explain what will happen if reach the max number of failed attempts");
-    _eraseLocalDataLabel.numberOfLines = 2;
+    _eraseLocalDataLabel.numberOfLines = 3;
     _eraseLocalDataLabel.backgroundColor = _eraseLocalDataLabelBackgroundColor;
     _eraseLocalDataLabel.hidden = YES;
     _eraseLocalDataLabel.textColor = _eraseLocalDataLabelTextColor;
@@ -910,7 +910,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
         _verticalOffset = -65;
         _passcodeButtonGap = 0;
     } else {
-        _verticalOffset = 0;
+        _verticalOffset = -5;
         _passcodeButtonGap = _verticalGap;
     }
     
@@ -1127,7 +1127,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
                                     toItem: _failedAttemptLabel
                                  attribute: NSLayoutAttributeBottom
                                 multiplier: 1.0f
-                                  constant: _verticalGap];
+                                  constant: _verticalGap + 5];
     NSLayoutConstraint *eraseLocalDataLabelLeading =
     [NSLayoutConstraint constraintWithItem: _eraseLocalDataLabel
                                  attribute: NSLayoutAttributeLeading
