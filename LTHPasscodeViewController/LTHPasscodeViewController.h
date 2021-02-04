@@ -125,6 +125,10 @@
  */
 @property (nonatomic, assign) CGFloat failedAttemptLabelGap;
 /**
+ @brief The gap between the passcode button and the keyboard.
+ */
+@property (nonatomic, assign) CGFloat passcodeButtonGap;
+/**
  @brief The height for the complex passcode overlay.
  */
 @property (nonatomic, assign) CGFloat passcodeOverlayHeight;

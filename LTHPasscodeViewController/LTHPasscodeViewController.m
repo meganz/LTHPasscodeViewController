@@ -81,7 +81,7 @@ options:NSNumericSearch] != NSOrderedAscending)
 @property (nonatomic, assign) CGFloat     fontSizeModifier;
 @property (nonatomic, assign) CGFloat     keyboardHeight;
 
-@property (nonatomic, assign) NSLayoutConstraint *optionsButtonConstraintBottom;
+@property (nonatomic, assign) NSLayoutConstraint *optionsButtonConstraintTop;
 
 @property (nonatomic, assign) BOOL        newPasscodeEqualsOldPasscode;
 @property (nonatomic, assign) BOOL        passcodeAlreadyExists;
@@ -518,13 +518,13 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     [self setUpOptionButtonLocation];
 }
 
-- (void)keyboardNoHeight:(NSNotification *)notification {
-    _keyboardHeight = 0;
-    [self setUpOptionButtonLocation];
+- (void)setUpOptionButtonLocation {
+    _passcodeButtonGap = UIDeviceOrientationIsLandscape([[UIDevice currentDevice] orientation])? 0 : _verticalGap;
+    _optionsButtonConstraintTop.constant = [self calculateOptionsButtonTopGap];
 }
 
-- (void)setUpOptionButtonLocation {
-    _optionsButtonConstraintBottom.constant = self.view.frame.size.height - _keyboardHeight - _verticalGap - _optionsButton.frame.size.height;
+- (CGFloat)calculateOptionsButtonTopGap {
+    return self.view.frame.size.height - _keyboardHeight - _passcodeButtonGap - _optionsButton.frame.size.height;
 }
 
 #pragma mark - View life
@@ -559,7 +559,6 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     
     [self.view setNeedsUpdateConstraints];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardHasHeight:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardNoHeight:) name:UIKeyboardWillHideNotification object:nil];
 }
 
 
@@ -906,6 +905,15 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     // That's why only portrait is selected for iPhone's supported orientations.
     // Modify this to fit your needs.
     
+    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+    if (UIDeviceOrientationIsLandscape(orientation)) {
+        _verticalOffset = -65;
+        _passcodeButtonGap = 0;
+    } else {
+        _verticalOffset = 0;
+        _passcodeButtonGap = _verticalGap;
+    }
+    
     CGFloat yOffsetFromCenter = -self.view.frame.size.height * 0.24 + _verticalOffset;
     NSLayoutConstraint *enterPasscodeConstraintCenterX =
     [NSLayoutConstraint constraintWithItem: _enterPasscodeLabel
@@ -1140,16 +1148,16 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
                                  attribute: NSLayoutAttributeCenterX
                                 multiplier: 1.0f
                                   constant: 0.0f];
-    _optionsButtonConstraintBottom =
+    _optionsButtonConstraintTop =
     [NSLayoutConstraint constraintWithItem: _optionsButton
                                  attribute: NSLayoutAttributeTop
                                  relatedBy: NSLayoutRelationEqual
                                     toItem: self.view
                                  attribute: NSLayoutAttributeTop
                                 multiplier: 1.0f
-                                  constant: self.view.frame.size.height - _keyboardHeight - _verticalGap - _optionsButton.frame.size.height];
+                                  constant: [self calculateOptionsButtonTopGap]];
     [self.view addConstraint: optionsButtonConstraintCenterX];
-    [self.view addConstraint: _optionsButtonConstraintBottom];
+    [self.view addConstraint: _optionsButtonConstraintTop];
 }
 
 
@@ -2143,6 +2151,7 @@ UIInterfaceOrientationMask UIInterfaceOrientationMaskFromOrientation(UIInterface
                                  completion:^(id<UIViewControllerTransitionCoordinatorContext> context){
         self.complexPasscodeOverlayView.layer.sublayers = nil;
         [self _setupPasscodeOverlayBorder];
+        self.keyboardHeight = 0;
         [self.view setNeedsUpdateConstraints];
     }];
 }
