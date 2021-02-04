@@ -892,7 +892,6 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     }
     else {
         [_complexPasscodeOverlayView addSubview:_passcodeTextField];
-        [self _setupPasscodeOverlayBorder];
         
         // If we come from simple state some constraints are added even if
         // translatesAutoresizingMaskIntoConstraints = NO,
