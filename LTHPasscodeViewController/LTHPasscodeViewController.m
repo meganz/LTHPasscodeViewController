@@ -512,6 +512,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
         [self _setupDigitFields];
     }
     _isUserSwitchingBetweenPasscodeModes = YES;
+    _failedAttemptLabel.hidden = YES;
     [self setIsSimple:!(passcodeType == PasscodeTypeCustomAlphanumeric) inViewController:nil asModal:self.displayedAsModal];
 }
 
