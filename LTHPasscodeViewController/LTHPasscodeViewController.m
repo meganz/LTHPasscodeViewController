@@ -298,6 +298,8 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     [LTHKeychainUtils deleteItemForUsername:_keychainPasscodeIsSimpleUsername
                              andServiceName:_keychainServiceName
                                       error:nil];
+    _passcodeType = PasscodeTypeFourDigits;
+    _isSimple = YES;
 }
 
 
@@ -628,8 +630,11 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     _isUserEnablingPasscode = NO;
     _isUserTurningPasscodeOff = NO;
     _isUserSwitchingBetweenPasscodeModes = NO;
-    // reset to previous passcode type
-    [self _doesPasscodeExist];
+
+    if (![self _doesPasscodeExist]) {
+        _passcodeType = PasscodeTypeFourDigits;
+        _isSimple = YES;
+    };
     [self.view setNeedsUpdateConstraints];
     [self _resetUI];
     [_passcodeTextField resignFirstResponder];
