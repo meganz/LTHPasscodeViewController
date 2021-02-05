@@ -1546,6 +1546,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
 - (void)_denyAccess {
     [self _resetTextFields];
     _passcodeTextField.text = @"";
+    [_passcodeTextField becomeFirstResponder];
     
     CAKeyframeAnimation *animation = [CAKeyframeAnimation animationWithKeyPath: @"transform.translation.x"];
     animation.duration = 0.6;
