@@ -2160,15 +2160,4 @@ UIInterfaceOrientationMask UIInterfaceOrientationMaskFromOrientation(UIInterface
     return 1 << orientation;
 }
 
-- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
-    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
-    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context){}
-                                 completion:^(id<UIViewControllerTransitionCoordinatorContext> context){
-        self.complexPasscodeOverlayView.layer.sublayers = nil;
-        [self _setupPasscodeOverlayBorder];
-        self.keyboardHeight = 0;
-        [self.view setNeedsUpdateConstraints];
-    }];
-}
-
 @end
