@@ -872,15 +872,17 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
 }
 
 - (void)_setupPasscodeOverlayBorder {
-    CALayer *topBorder = [CALayer layer];
+    UIView *topBorder = [UIView new];
+    [topBorder setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin];
     topBorder.frame = CGRectMake(0, 0, self.view.frame.size.width, 1);
-    topBorder.backgroundColor = _textFieldBorderColor.CGColor;
-    [_complexPasscodeOverlayView.layer addSublayer:topBorder];
+    topBorder.backgroundColor = _textFieldBorderColor;
+    [_complexPasscodeOverlayView addSubview:topBorder];
 
-    CALayer *bottomBorder = [CALayer layer];
+    UIView *bottomBorder = [UIView new];
+    [bottomBorder setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin];
     bottomBorder.frame = CGRectMake(0, _passcodeOverlayHeight - 1, self.view.frame.size.width, 1);
-    bottomBorder.backgroundColor = _textFieldBorderColor.CGColor;
-    [_complexPasscodeOverlayView.layer addSublayer:bottomBorder];
+    bottomBorder.backgroundColor = _textFieldBorderColor;
+    [_complexPasscodeOverlayView addSubview:bottomBorder];
 }
 
 - (void)updateViewConstraints {
