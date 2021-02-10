@@ -596,6 +596,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
     _animatingView.frame = self.view.bounds;
+    [self setUpOptionButtonLocation];
 }
 
 
