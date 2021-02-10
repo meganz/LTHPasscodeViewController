@@ -1421,6 +1421,14 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
     [textField resignFirstResponder];
+    if (_passcodeType != PasscodeTypeCustomAlphanumeric) {
+        NSInteger inputLength = _passcodeTextField.text.length;
+        NSInteger expectLength = _passcodeType == PasscodeTypeFourDigits ? 4 : 6;
+        if (inputLength != expectLength) {
+            [textField becomeFirstResponder];
+            return NO;
+        }
+    }
     [self _validateComplexPasscode];
     return YES;
 }
