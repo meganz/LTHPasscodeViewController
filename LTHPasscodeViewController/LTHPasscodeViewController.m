@@ -73,6 +73,8 @@ options:NSNumericSearch] != NSOrderedAscending)
 @property (nonatomic, strong) UILabel     *eraseLocalDataLabel;
 @property (nonatomic, strong) UILabel     *enterPasscodeLabel;
 @property (nonatomic, strong) UIButton    *optionsButton;
+@property (nonatomic, strong) UIView      *topBorder;
+@property (nonatomic, strong) UIView      *bottomBorder;
 
 @property (nonatomic, strong) NSString    *tempPasscode;
 @property (nonatomic, assign) NSInteger   failedAttempts;
@@ -873,17 +875,15 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
 }
 
 - (void)_setupPasscodeOverlayBorder {
-    UIView *topBorder = [UIView new];
-    [topBorder setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin];
-    topBorder.frame = CGRectMake(0, 0, self.view.frame.size.width, 1);
-    topBorder.backgroundColor = _textFieldBorderColor;
-    [_complexPasscodeOverlayView addSubview:topBorder];
+    _topBorder = [[UIView alloc] initWithFrame:CGRectZero];
+    _topBorder.backgroundColor = _textFieldBorderColor;
+    [_complexPasscodeOverlayView addSubview:_topBorder];
+    _topBorder.translatesAutoresizingMaskIntoConstraints = NO;
 
-    UIView *bottomBorder = [UIView new];
-    [bottomBorder setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleBottomMargin];
-    bottomBorder.frame = CGRectMake(0, _passcodeOverlayHeight - 1, self.view.frame.size.width, 1);
-    bottomBorder.backgroundColor = _textFieldBorderColor;
-    [_complexPasscodeOverlayView addSubview:bottomBorder];
+    _bottomBorder = [[UIView alloc] initWithFrame:CGRectZero];
+    _bottomBorder.backgroundColor = _textFieldBorderColor;
+    [_complexPasscodeOverlayView addSubview:_bottomBorder];
+    _bottomBorder.translatesAutoresizingMaskIntoConstraints = NO;
 }
 
 - (void)updateViewConstraints {
@@ -1096,6 +1096,87 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
                                     multiplier: 1.0f
                                       constant: 0.0f];
         [self.view addConstraints:@[overlayViewLeftConstraint, overlayViewY, overlayViewHeight, overlayViewWidth]];
+        
+        NSLayoutConstraint *topBorderWidth =
+        [NSLayoutConstraint constraintWithItem: _topBorder
+                                     attribute: NSLayoutAttributeWidth
+                                     relatedBy: NSLayoutRelationEqual
+                                        toItem: _complexPasscodeOverlayView
+                                     attribute: NSLayoutAttributeWidth
+                                    multiplier: 1.0f
+                                      constant: 0.0f];
+        
+        NSLayoutConstraint *topBorderConstraintCenterX =
+        [NSLayoutConstraint constraintWithItem: _topBorder
+                                     attribute: NSLayoutAttributeCenterX
+                                     relatedBy: NSLayoutRelationEqual
+                                        toItem: _complexPasscodeOverlayView
+                                     attribute: NSLayoutAttributeCenterX
+                                    multiplier: 1.0f
+                                      constant: 0.0f];
+        NSLayoutConstraint *topBorderConstraintTop =
+        [NSLayoutConstraint constraintWithItem: _topBorder
+                                     attribute: NSLayoutAttributeTop
+                                     relatedBy: NSLayoutRelationEqual
+                                        toItem: _complexPasscodeOverlayView
+                                     attribute: NSLayoutAttributeTop
+                                    multiplier: 1.0f
+                                      constant: 0.0f];
+        
+        NSLayoutConstraint *topBorderConstraintHeight =
+        [NSLayoutConstraint constraintWithItem: _topBorder
+                                     attribute: NSLayoutAttributeHeight
+                                     relatedBy: NSLayoutRelationEqual
+                                        toItem: nil
+                                     attribute: NSLayoutAttributeNotAnAttribute
+                                    multiplier: 1.0f
+                                      constant: 1.0f];
+        
+        [self.view addConstraint:topBorderWidth];
+        [self.view addConstraint:topBorderConstraintCenterX];
+        [self.view addConstraint:topBorderConstraintTop];
+        [self.view addConstraint:topBorderConstraintHeight];
+        
+        NSLayoutConstraint *bottomBorderWidth =
+        [NSLayoutConstraint constraintWithItem: _bottomBorder
+                                     attribute: NSLayoutAttributeWidth
+                                     relatedBy: NSLayoutRelationEqual
+                                        toItem: _complexPasscodeOverlayView
+                                     attribute: NSLayoutAttributeWidth
+                                    multiplier: 1.0f
+                                      constant: 0.0f];
+        NSLayoutConstraint *bottomBorderConstraintCenterX =
+        [NSLayoutConstraint constraintWithItem: _bottomBorder
+                                     attribute: NSLayoutAttributeCenterX
+                                     relatedBy: NSLayoutRelationEqual
+                                        toItem: _complexPasscodeOverlayView
+                                     attribute: NSLayoutAttributeCenterX
+                                    multiplier: 1.0f
+                                      constant: 0.0f];
+        
+        NSLayoutConstraint *bottomBorderConstraintTop =
+        [NSLayoutConstraint constraintWithItem: _bottomBorder
+                                     attribute: NSLayoutAttributeTop
+                                     relatedBy: NSLayoutRelationEqual
+                                        toItem: _complexPasscodeOverlayView
+                                     attribute: NSLayoutAttributeBottom
+                                    multiplier: 1.0f
+                                      constant: -1.0f];
+        
+        NSLayoutConstraint *bottomBorderConstraintHeight =
+        [NSLayoutConstraint constraintWithItem: _bottomBorder
+                                     attribute: NSLayoutAttributeHeight
+                                     relatedBy: NSLayoutRelationEqual
+                                        toItem: nil
+                                     attribute: NSLayoutAttributeNotAnAttribute
+                                    multiplier: 1.0f
+                                      constant: 1.0f];
+        
+        [self.view addConstraint:bottomBorderWidth];
+        [self.view addConstraint:bottomBorderConstraintCenterX];
+        [self.view addConstraint:bottomBorderConstraintTop];
+        [self.view addConstraint:bottomBorderConstraintHeight];
+        
     }
     
     NSLayoutConstraint *failedAttemptLabelCenterX =
