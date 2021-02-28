@@ -196,7 +196,6 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     
     if (_isSimple) {
         _digitsCount = (_passcodeType == PasscodeTypeFourDigits) ? 4 : 6;
-        [self _setupDigitFields];
     }
     
     return [self _passcode].length != 0;
