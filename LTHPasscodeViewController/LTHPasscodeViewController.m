@@ -645,8 +645,9 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     if (![self _doesPasscodeExist]) {
         _passcodeType = PasscodeTypeFourDigits;
         _isSimple = YES;
-    };
-    [self.view setNeedsUpdateConstraints];
+        _digitsCount = 4;
+    }
+    [self _setupDigitFields];
     [self _resetUI];
     [_passcodeTextField resignFirstResponder];
     
