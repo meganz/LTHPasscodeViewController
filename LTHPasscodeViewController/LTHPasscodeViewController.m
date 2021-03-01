@@ -82,8 +82,11 @@ options:NSNumericSearch] != NSOrderedAscending)
 @property (nonatomic, assign) CGFloat     modifierForBottomVerticalGap;
 @property (nonatomic, assign) CGFloat     fontSizeModifier;
 @property (nonatomic, assign) CGFloat     keyboardHeight;
+@property (nonatomic, assign) CGFloat     yOffsetFromCenter;
 
 @property (nonatomic, assign) NSLayoutConstraint *optionsButtonConstraintTop;
+@property (nonatomic, assign) NSLayoutConstraint *enterPasscodeConstraintCenterY;
+@property (nonatomic, assign) NSLayoutConstraint *enterPasscodeConstraintTop;
 @property (nonatomic, assign) BOOL        isResetPasscode;
 
 @property (nonatomic, assign) BOOL        newPasscodeEqualsOldPasscode;
@@ -538,6 +541,18 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     return self.view.frame.size.height - _keyboardHeight - _passcodeButtonGap - _optionsButton.frame.size.height;
 }
 
+- (void)calculateOffsetGap {
+    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
+    if (UIDeviceOrientationIsLandscape(orientation)) {
+        _verticalOffset = LTHiPad? -110 : -65;
+        _passcodeButtonGap = 0;
+    } else {
+        _verticalOffset = -5;
+        _passcodeButtonGap = _verticalGap;
+    }
+    _yOffsetFromCenter = -LTHMainWindow.bounds.size.height * 0.24 + _verticalOffset;
+}
+
 #pragma mark - View life
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -920,15 +935,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     // That's why only portrait is selected for iPhone's supported orientations.
     // Modify this to fit your needs.
     
-    UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
-    if (UIDeviceOrientationIsLandscape(orientation)) {
-        _verticalOffset = LTHiPad? -110 : -65;
-        _passcodeButtonGap = 0;
-    } else {
-        _verticalOffset = -5;
-        _passcodeButtonGap = _verticalGap;
-    }
-    CGFloat yOffsetFromCenter = -LTHMainWindow.screen.bounds.size.height * 0.24 + _verticalOffset;
+    [self calculateOffsetGap];
     NSLayoutConstraint *enterPasscodeConstraintCenterX =
     [NSLayoutConstraint constraintWithItem: _enterPasscodeLabel
                                  attribute: NSLayoutAttributeCenterX
@@ -937,16 +944,16 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
                                  attribute: NSLayoutAttributeCenterX
                                 multiplier: 1.0f
                                   constant: 0.0f];
-    NSLayoutConstraint *enterPasscodeConstraintCenterY =
+    _enterPasscodeConstraintCenterY =
     [NSLayoutConstraint constraintWithItem: _enterPasscodeLabel
                                  attribute: NSLayoutAttributeCenterY
                                  relatedBy: NSLayoutRelationEqual
                                     toItem: _animatingView
                                  attribute: NSLayoutAttributeCenterY
                                 multiplier: 1.0f
-                                  constant: yOffsetFromCenter];
+                                  constant: _yOffsetFromCenter];
     [self.view addConstraint: enterPasscodeConstraintCenterX];
-    [self.view addConstraint: enterPasscodeConstraintCenterY];
+    [self.view addConstraint: _enterPasscodeConstraintCenterY];
     
     NSLayoutConstraint *enterPasscodeInfoConstraintCenterX =
     [NSLayoutConstraint constraintWithItem: _enterPasscodeInfoLabel
@@ -2176,6 +2183,16 @@ CGFloat UIInterfaceOrientationAngleOfOrientation(UIInterfaceOrientation orientat
 
 UIInterfaceOrientationMask UIInterfaceOrientationMaskFromOrientation(UIInterfaceOrientation orientation) {
     return 1 << orientation;
+}
+
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context){}
+                                 completion:^(id<UIViewControllerTransitionCoordinatorContext> context){
+        [self calculateOffsetGap];
+        self.enterPasscodeConstraintCenterY.constant = self.yOffsetFromCenter;
+        self.optionsButtonConstraintTop.constant = [self calculateOptionsButtonTopGap];
+    }];
 }
 
 @end
