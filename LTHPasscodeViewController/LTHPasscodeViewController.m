@@ -724,7 +724,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
 - (void)_setupNavBarWithLogoutTitle:(NSString *)logoutTitle {
     // Navigation Bar with custom UI
     UIView *patchView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, LTHMainWindow.frame.size.width, [LTHPasscodeViewController getStatusBarHeight])];
-    patchView.backgroundColor = UIColor.mnz_background;
+    patchView.backgroundColor = UIColor.clearColor;
     patchView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     [self.view addSubview:patchView];
     
