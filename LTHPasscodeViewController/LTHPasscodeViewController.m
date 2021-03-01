@@ -556,9 +556,11 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     
     // If on first launch we have a passcode, the number of digits should equal that.
     if ([self _doesPasscodeExist]) {
-        _digitsCount = [self _passcode].length;
+        if (_isSimple) {
+            _digitsCount = [self _passcode].length;
+            [self _setupDigitFields];
+        }
     }
-    [self _setupDigitFields];
     
     _passcodeTextField = [[UITextField alloc] initWithFrame: CGRectZero];
     _passcodeTextField.textAlignment = NSTextAlignmentCenter;
