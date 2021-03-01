@@ -303,6 +303,8 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     if (!_isResetPasscode) {
         _passcodeType = PasscodeTypeFourDigits;
         _isSimple = YES;
+        _digitsCount = 4;
+        [self _setupDigitFields];
     } else {
         _isResetPasscode = NO;
     }
