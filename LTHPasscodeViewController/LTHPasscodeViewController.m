@@ -552,7 +552,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
         _passcodeButtonGap = _verticalGap;
     }
     if (_displayedAsLockScreen && _isUsingNavBar) {
-        _verticalOffset += 44;
+        _verticalOffset += 50;
     }
     _yOffsetFromCenter = -LTHMainWindow.bounds.size.height * 0.24 + _verticalOffset;
 }
