@@ -651,26 +651,6 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     return self.statusBarStyle;
 }
 
-#ifndef LTH_IS_APP_EXTENSION
-- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
-    [super traitCollectionDidChange:previousTraitCollection];
-    
-    if ([self.traitCollection hasDifferentColorAppearanceComparedToTraitCollection:previousTraitCollection]) {
-        [AppearanceManager forceNavigationBarUpdate:self.navigationController.navigationBar traitCollection:self.traitCollection];
-        self.view.backgroundColor = [UIColor surface1Background];
-
-        if (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
-            self.statusBarStyle = UIStatusBarStyleLightContent;
-        } else {
-            self.statusBarStyle = UIStatusBarStyleDarkContent;
-        }
-
-        [self setNeedsStatusBarAppearanceUpdate];
-    }
-}
-#endif
-
-
 - (void)_cancelAndDismissMe {
     _isCurrentlyOnScreen = NO;
     _isUserBeingAskedForNewPasscode = NO;
