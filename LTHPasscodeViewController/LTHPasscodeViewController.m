@@ -668,7 +668,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     [super traitCollectionDidChange:previousTraitCollection];
     
     if ([self.traitCollection hasDifferentColorAppearanceComparedToTraitCollection:previousTraitCollection]) {
-        [AppearanceManager forceNavigationBarUpdate:self.navigationController.navigationBar traitCollection:self.traitCollection];
+        [AppearanceManager forceNavigationBarUpdate:self.navigationController.navigationBar];
         self.view.backgroundColor = [UIColor surface1Background];
 
         if (self.traitCollection.userInterfaceStyle == UIUserInterfaceStyleDark) {
