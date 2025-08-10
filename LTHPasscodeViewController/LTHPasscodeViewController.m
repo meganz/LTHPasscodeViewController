@@ -236,6 +236,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
                      forServiceName:_keychainServiceName
                      updateExisting:YES
                               error:nil];
+    [self recreateKMTransferFile];
 }
 
 
@@ -314,6 +315,8 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     } else {
         _isResetPasscode = NO;
     }
+
+    [self recreateKMTransferFile];
 }
 
 
@@ -348,6 +351,8 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
                      forServiceName:_keychainServiceName
                      updateExisting:YES
                               error:nil];
+
+    [self recreateKMTransferFile];
 }
 
 
@@ -468,6 +473,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
                      forServiceName:_keychainServiceName
                      updateExisting:YES
                               error:nil];
+    [self recreateKMTransferFile];
 }
 
 
