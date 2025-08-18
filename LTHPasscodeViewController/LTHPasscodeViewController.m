@@ -236,6 +236,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
                      forServiceName:_keychainServiceName
                      updateExisting:YES
                               error:nil];
+    [self recreateKMTransferFile];
 }
 
 
@@ -314,6 +315,8 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     } else {
         _isResetPasscode = NO;
     }
+
+    [self recreateKMTransferFile];
 }
 
 
@@ -348,6 +351,8 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
                      forServiceName:_keychainServiceName
                      updateExisting:YES
                               error:nil];
+
+    [self recreateKMTransferFile];
 }
 
 
@@ -468,6 +473,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
                      forServiceName:_keychainServiceName
                      updateExisting:YES
                               error:nil];
+    [self recreateKMTransferFile];
 }
 
 
@@ -554,7 +560,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
 - (void)calculateOffsetGap {
     UIDeviceOrientation orientation = [[UIDevice currentDevice] orientation];
     if (UIDeviceOrientationIsLandscape(orientation)) {
-        _verticalOffset = LTHiPad? -110 : -25;
+        _verticalOffset = LTHiPad? -110 : -40;
         _passcodeButtonGap = 0;
     } else {
         _verticalOffset = -5;
@@ -631,6 +637,18 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     [self setUpOptionButtonLocation];
 }
 
+- (void)refreshNavBar {
+    if (!self.isUsingNavBar || !self.displayedAsLockScreen) {
+        return;
+    }
+    
+    NSString *logoutTitle = self.isUsingNavBar ? self.navBar.items.firstObject.leftBarButtonItem.title : @"";
+#ifndef LTH_IS_APP_EXTENSION
+    [self _setupNavBarWithLogoutTitle:logoutTitle width:[UIApplication currentWindow].frame.size.width];
+#else
+    [self _setupNavBarWithLogoutTitle:logoutTitle width:self.presentingView.frame.size.width];
+#endif
+}
 
 - (void)viewWillDisappear:(BOOL)animated {
     // If _isCurrentlyOnScreen is true at this point,
@@ -649,6 +667,11 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
     return self.statusBarStyle;
+}
+
+- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
+    [super traitCollectionDidChange:previousTraitCollection];
+    [self adjustLayoutForCurrentScreenConfiguration];
 }
 
 - (void)_cancelAndDismissMe {
@@ -726,15 +749,10 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
 
 #pragma mark - UI setup
 - (void)_setupNavBarWithLogoutTitle:(NSString *)logoutTitle width:(CGFloat)width {
-    // Navigation Bar with custom UI
-    UIView *patchView = [[UIView alloc] initWithFrame:CGRectMake(0, 0, width, self.view.safeAreaInsets.top)];
-    patchView.backgroundColor = UIColor.clearColor;
-    patchView.autoresizingMask = UIViewAutoresizingFlexibleWidth;
-    [self.view addSubview:patchView];
-    
-    self.navBar =
-    [[UINavigationBar alloc] initWithFrame:CGRectMake(0, patchView.frame.size.height,
-                                                      width, 44)];
+    if(self.navBar != nil) {
+        [self.navBar removeFromSuperview];
+    }
+    self.navBar = [[UINavigationBar alloc] initWithFrame: CGRectMake(0, [LTHPasscodeViewController getStatusBarHeight], width, 44)];
     self.navBar.autoresizingMask = UIViewAutoresizingFlexibleWidth;
     self.navBar.tintColor = self.navigationTintColor;
     if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
@@ -1579,6 +1597,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     if (_maxNumberOfAllowedFailedAttempts > 0 &&
         _failedAttempts >= _maxNumberOfAllowedFailedAttempts &&
         [self.delegate respondsToSelector: @selector(maxNumberOfFailedAttemptsReached)]) {
+        _failedAttempts = 0;
         [self.delegate maxNumberOfFailedAttemptsReached];
     }
     
@@ -2131,6 +2150,16 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
      object:nil];
 }
 
+
++ (CGFloat)getStatusBarHeight {
+#ifdef LTH_IS_APP_EXTENSION
+    return 0.0; // Status bar height isn't applicable for extensions
+#else
+    UIWindowScene *windowScene = [UIApplication currentWindow].windowScene;
+    return windowScene.statusBarManager.statusBarFrame.size.height;
+#endif
+}
+
 CGFloat UIInterfaceOrientationAngleOfOrientation(UIInterfaceOrientation orientation) {
     CGFloat angle;
     
@@ -2158,13 +2187,17 @@ UIInterfaceOrientationMask UIInterfaceOrientationMaskFromOrientation(UIInterface
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
-    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context){}
-                                 completion:^(id<UIViewControllerTransitionCoordinatorContext> context){
-        [self calculateOffsetGap];
-        self.enterPasscodeConstraintCenterY.constant = self.yOffsetFromCenter;
-        self.optionsButtonConstraintTop.constant = [self calculateOptionsButtonTopGap];
-        [self statusBarOrientationChanged];
-    }];
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context){
+        [self adjustLayoutForCurrentScreenConfiguration];
+        [self refreshNavBar];
+    } completion: nil];
+}
+
+- (void)adjustLayoutForCurrentScreenConfiguration {
+    [self calculateOffsetGap];
+    self.enterPasscodeConstraintCenterY.constant = self.yOffsetFromCenter;
+    self.optionsButtonConstraintTop.constant = [self calculateOptionsButtonTopGap];
+    [self statusBarOrientationChanged];
 }
 
 @end
