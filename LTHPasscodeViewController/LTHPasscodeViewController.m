@@ -708,7 +708,7 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     [_passcodeTextField resignFirstResponder];
     [UIView animateWithDuration: _lockAnimationDuration animations: ^{
         if (self.displayedAsLockScreen) {
-            self.view.center = CGPointMake(self.view.center.x, self.view.center.y * 2.f);
+            self.view.center = CGPointMake(self.view.center.x, self.view.center.y + self.view.frame.size.height);
         }
         else {
             // Delete from Keychain
