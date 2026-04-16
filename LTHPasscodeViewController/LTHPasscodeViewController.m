@@ -765,12 +765,19 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     }
     
     // Navigation item
+    UIBarButtonItemStyle style = UIBarButtonItemStyleDone;
+    if (@available(iOS 26.0, *)) {
+        style = UIBarButtonItemStylePlain;
+    }
     UIBarButtonItem *leftButton =
     [[UIBarButtonItem alloc] initWithTitle:logoutTitle
-                                     style:UIBarButtonItemStyleDone
+                                     style:style
                                     target:self
                                     action:@selector(_logoutWasPressed)];
-    [leftButton setTitlePositionAdjustment:UIOffsetMake(10, 0) forBarMetrics:UIBarMetricsDefault];
+    if (@available(iOS 26.0, *)) {
+    } else {
+        [leftButton setTitlePositionAdjustment:UIOffsetMake(10, 0) forBarMetrics:UIBarMetricsDefault];
+    }
     
     UINavigationItem *item =
     [[UINavigationItem alloc] initWithTitle:self.title];
