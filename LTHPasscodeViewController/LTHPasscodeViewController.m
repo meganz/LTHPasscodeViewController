@@ -788,6 +788,29 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     [self.view addSubview:self.navBar];
 }
 
+- (void)_updateNavBarFrame {
+    if (self.navBar == nil) return;
+    if (@available(iOS 26.0, *)) {} else { return; }
+    UIEdgeInsets safe = self.view.safeAreaInsets;
+    CGFloat top = MAX(safe.top, [LTHPasscodeViewController getStatusBarHeight]);
+    if (top == 0) top = 16;
+    // iOS 26 portrait (no native horizontal safe-area inset): force 16pt margin. Landscape notch already provides margin.
+    CGFloat x = (safe.left == 0) ? 16 : safe.left;
+    CGFloat width = self.view.bounds.size.width - x * 2;
+
+    self.navBar.frame = CGRectMake(x, top, width, self.navBar.frame.size.height);
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    [self _updateNavBarFrame];
+}
+
+- (void)viewSafeAreaInsetsDidChange {
+    [super viewSafeAreaInsetsDidChange];
+    [self _updateNavBarFrame];
+}
+
 - (void)_setupViews {
     _coverView = [[UIView alloc] initWithFrame: CGRectZero];
     _coverView.backgroundColor = _coverViewBackgroundColor;
