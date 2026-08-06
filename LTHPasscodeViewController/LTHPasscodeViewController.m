@@ -606,6 +606,15 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     
     [self.view setNeedsUpdateConstraints];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardHasHeight:) name:UIKeyboardWillShowNotification object:nil];
+
+    // The layout is derived from the current screen configuration, so observe the size classes
+    // rather than overriding the deprecated -traitCollectionDidChange:. Rotation is already
+    // covered by -viewWillTransitionToSize:withTransitionCoordinator:.
+    if (@available(iOS 17.0, *)) {
+        [self registerForTraitChanges:@[UITraitVerticalSizeClass.class, UITraitHorizontalSizeClass.class]
+                           withTarget:self
+                               action:@selector(adjustLayoutForCurrentScreenConfiguration)];
+    }
 }
 
 
@@ -667,11 +676,6 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
 
 - (UIStatusBarStyle)preferredStatusBarStyle {
     return self.statusBarStyle;
-}
-
-- (void)traitCollectionDidChange:(UITraitCollection *)previousTraitCollection {
-    [super traitCollectionDidChange:previousTraitCollection];
-    [self adjustLayoutForCurrentScreenConfiguration];
 }
 
 - (void)_cancelAndDismissMe {
