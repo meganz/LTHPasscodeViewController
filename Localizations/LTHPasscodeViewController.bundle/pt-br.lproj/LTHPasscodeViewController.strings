@@ -1,48 +1,48 @@
 /* Text used to enter your previous PIN code. Not to be confused with "password". You can find how the Passcode is called in your language in an iOS device settings. */
-"Enter your old passcode"="Introdu vechiul cod de acces";
+"Enter your old passcode"="Digite seu código de acesso antigo";
 /* Text used to enter your current PIN code. Not to be confused with "password". You can find how the Passcode is called in your language in an iOS device settings. */
-"Enter your passcode"="Introdu codul de acces";
+"Enter your passcode"="Digite o seu código de acesso";
 /* You will be asked to enter this code everytime you open the application. */
-"Passcode info"="Ți se va cere să introduci acest cod\nde fiecare dată când deschizi aplicația";
+"Passcode info"="Você deverá digitar este código\nsempre que abrir o aplicativo";
 /* Text used to enable a PIN code. Not to be confused with "password". You can find how the Passcode is called in your language in an iOS device settings. */
-"Enable Passcode"="Activează codul de acces";
+"Enable Passcode"="Ativar código de acesso";
 /* Text used to change your PIN code. Not to be confused with "password". You can find how the Passcode is called in your language in an iOS device settings. */
-"Change Passcode"="Modifică codul de acces";
+"Change Passcode"="Mudar o código";
 /* Text used to turn off your PIN code. Not to be confused with "password". You can find how the Passcode is called in your language in an iOS device settings. */
-"Turn off passcode"="Oprește codul de acces";
+"Turn off passcode"="Desativar o código";
 /* Text used to re-enter your PIN code. Not to be confused with "password". You can find how the Passcode is called in your language in an iOS device settings. */
-"Re-enter your passcode"="Reintrodu codul de acces";
+"Re-enter your passcode"="Digite seu código de acesso novamente";
 /* Text used to enter your new PIN code. Not to be confused with "password". You can find how the Passcode is called in your language in an iOS device settings. */
-"Re-enter your new passcode"="Reintrodu noul cod de acces";
+"Re-enter your new passcode"="Digite novamente seu novo código de acesso";
 /* Text used to enter your new PIN code. Not to be confused with "password". You can find how the Passcode is called in your language in an iOS device settings. */
-"Enter your new passcode"="Introdu noul cod de acces";
+"Enter your new passcode"="Digite seu novo código de acesso";
 /* Text used to state that your PIN codes do not match. Not to be confused with "password". You can find how the Passcode is called in your language in an iOS device settings. */
-"Passcodes did not match. Try again."="Codurile de acces nu coincid. Încearcă din nou.";
+"Passcodes did not match. Try again."="O código de acesso não esta correto. Tente novamente.";
 /* Text used to state a failed attempt entering your PIN code. Not to be confused with "password". You can find how the Passcode is called in your language in an iOS device settings. */
-"1 Passcode failed attempt"="1 încercare eșuată pentru codul de acces";
+"1 Passcode failed attempt"="1 tentativa de acesso com código incorreto";
 /* Plural. Text used to state several failed attempts entering your PIN code. Not to be confused with "password". You can find how the Passcode is called in your language in an iOS device settings. */
-"%i Passcode failed attempts"="%i încercări eșuate pentru codul de acces";
+"%i Passcode failed attempts"="%i tentativas de acesso com código incorreto";
 /* Message shown to unlock the screen using Touch ID. */
-"Unlock using Touch ID"="Deblochează folosind Touch ID";
+"Unlock using Touch ID"="Desbloquear usando o Touch ID";
 /* Message shown to unlock the screen using Face ID */
-"Unlock using Face ID"="Deblochează folosind Face ID";
+"Unlock using Face ID"="Desbloquear usando o Face ID";
 /* Text used to explain it is not possible to reuse the same PIN code. Not to be confused with "password". You can find how the Passcode is called in your language in an iOS device settings. */
-"Cannot reuse the same passcode"="Nu poți refolosi același cod de acces";
+"Cannot reuse the same passcode"="Não é possível reutilizar o código";
 /* Button text to change the passcode type. */
-"Passcode Options"="Opțiuni pentru codul de acces";
+"Passcode Options"="Opções de código de acesso";
 /* Title to confirm that you want to logout */
-"proceedToLogout"="Continuă pentru a te deconecta";
+"proceedToLogout"="Fazer logout";
 /* Warning message to alert user about logout in My Account section if has offline files and transfers in progress. */
-"When you logout, files from your Offline section will be deleted from your device and ongoing transfers will be cancelled."="Când te deconectezi, fișierele din secțiunea Offline vor fi șterse de pe dispozitiv și transferurile în curs vor fi anulate.";
+"When you logout, files from your Offline section will be deleted from your device and ongoing transfers will be cancelled."="Quando você fizer logout, os arquivos da seção Offline serão deletados do seu dispositivo, e as transferências em andamento serão canceladas.";
 /* Button title to cancel something */
-"cancel"="Anulează";
+"cancel"="Cancelar";
 /* Title of the button which logs out from your account. */
-"logoutLabel"="Deconectează-te";
+"logoutLabel"="Fazer logout";
 /* Action text to change to 4-Digit Numeric passcode type. */
-"4-Digit Numeric Code"="Cod numeric din 4 cifre";
+"4-Digit Numeric Code"="Código numérico de 4 dígitos";
 /* Action text to change to 6-Digit Numeric passcode type. */
-"6-Digit Numeric Code"="Cod numeric din 6 cifre";
+"6-Digit Numeric Code"="Código numérico de 6 dígitos";
 /* Action text to change to Custom Alphanumeric passcode type. */
-"Custom Alphanumeric Code"="Cod alfanumeric personalizat";
+"Custom Alphanumeric Code"="Código alfanumérico personalizado";
 /* Footer text that explain what will happen if reach the max number of failed attempts */
-"failedAttempstSectionTitle"="Vei fi deconectat(ă) și fișierele tale offline vor fi șterse după 10 încercări eșuate.";
+"failedAttempstSectionTitle"="Depois de 10 tentativas incorretas, você será deslogado e os arquivos salvos em Offline serão deletados";
