@@ -2093,7 +2093,8 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
 // then presenting it inside a modal in another orientation would display
 // the view in the first orientation.
 - (UIInterfaceOrientation)desiredOrientation {
-    UIInterfaceOrientation statusBarOrientation = CGRectGetWidth(UIScreen.mainScreen.bounds) < CGRectGetHeight(UIScreen.mainScreen.bounds) ? UIInterfaceOrientationPortrait : UIInterfaceOrientationLandscapeLeft;
+    CGRect containerBounds = self.view.window ? self.view.window.bounds : self.view.bounds;
+    UIInterfaceOrientation statusBarOrientation = CGRectGetWidth(containerBounds) < CGRectGetHeight(containerBounds) ? UIInterfaceOrientationPortrait : UIInterfaceOrientationLandscapeLeft;
         UIInterfaceOrientationMask statusBarOrientationAsMask = UIInterfaceOrientationMaskFromOrientation(statusBarOrientation);
         if(self.supportedInterfaceOrientations & statusBarOrientationAsMask) {
             return statusBarOrientation;
