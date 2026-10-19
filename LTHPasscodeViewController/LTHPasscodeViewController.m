@@ -792,6 +792,39 @@ static const NSInteger LTHMaxPasscodeDigits = 10;
     [self.view addSubview:self.navBar];
 }
 
+- (void)_updateNavBarFrame {
+    if (self.navBar == nil) return;
+    if (@available(iOS 26.0, *)) {} else { return; }
+    // As a lock screen the view is added straight to the window, outside the view controller hierarchy, so its own
+    // safe area can be zero. The window's is always right, and the lock screen covers the whole window.
+    UIEdgeInsets safe = self.view.window ? self.view.window.safeAreaInsets : self.view.safeAreaInsets;
+    // Kept off the edge by hand where there is no safe-area inset: systemMinimumLayoutMargins is zero here too,
+    // for the same reason as the view's safe area.
+    CGFloat margin =  self.view.window.rootViewController.systemMinimumLayoutMargins.leading;
+    if (margin == 0) {
+        margin = 16;
+    }
+    CGFloat top = MAX(safe.top, [LTHPasscodeViewController getStatusBarHeight]);
+    if (top == 0) {
+        top = margin;
+    }
+    // iOS 26 portrait (no horizontal safe-area inset): use the margin. In landscape the notch inset provides it.
+    CGFloat x = (safe.left == 0) ? margin : safe.left;
+    CGFloat width = self.view.bounds.size.width - x * 2;
+
+    self.navBar.frame = CGRectMake(x, top, width, self.navBar.frame.size.height);
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    [self _updateNavBarFrame];
+}
+
+- (void)viewSafeAreaInsetsDidChange {
+    [super viewSafeAreaInsetsDidChange];
+    [self _updateNavBarFrame];
+}
+
 - (void)_setupViews {
     _coverView = [[UIView alloc] initWithFrame: CGRectZero];
     _coverView.backgroundColor = _coverViewBackgroundColor;
